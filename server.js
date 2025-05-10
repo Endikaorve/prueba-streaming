@@ -1,9 +1,7 @@
 import Fastify from "fastify";
 import { createReadableStream, render, html, delayed } from "./utils.js";
 
-const app = Fastify({
-  logger: true,
-});
+const app = Fastify();
 
 const template = () => html`<!DOCTYPE html>
   <html>
