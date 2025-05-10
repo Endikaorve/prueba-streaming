@@ -24,7 +24,7 @@ const template = () => html`<!DOCTYPE html>
     </body>
   </html>`;
 
-app.get("/", async (request, reply) => {
+app.get("/", async (_, reply) => {
   reply.header("Content-Type", "text/html");
 
   const htmlStream = createReadableStream(render(template()));
