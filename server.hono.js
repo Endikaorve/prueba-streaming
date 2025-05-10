@@ -1,9 +1,10 @@
-import Fastify from "fastify";
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+import { stream } from "hono/streaming";
+
 import { createReadableStream, render, html, delayed } from "./utils.js";
 
-const app = Fastify({
-  logger: true,
-});
+const app = new Hono();
 
 const template = () => html`<!DOCTYPE html>
   <html>
@@ -24,24 +25,17 @@ const template = () => html`<!DOCTYPE html>
     </body>
   </html>`;
 
-app.get("/", async (request, reply) => {
-  reply.header("Content-Type", "text/html");
-
-  const htmlStream = createReadableStream(render(template()));
-
-  return reply.send(htmlStream);
+app.get("/", (ctx) => {
+  return stream(ctx, async (stream) => {
+    ctx.res.headers.set("Content-Type", "text/html");
+    await stream.pipe(createReadableStream(render(template())));
+  });
 });
 
 const port = process.env.PORT || 3000;
+console.log(`Server is running on http://localhost:${port}`);
 
-const start = async () => {
-  try {
-    await app.listen({ port });
-    console.log(`Server is running on http://localhost:${port}`);
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
-};
-
-start();
+serve({
+  fetch: app.fetch,
+  port: port,
+});
