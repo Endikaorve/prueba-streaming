@@ -1,0 +1,13 @@
+{
+  "engines": {
+    "node": ">=18"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.4.0",
+    "hono": "^3.12.0"
+  }
+}
